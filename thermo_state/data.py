@@ -20,7 +20,7 @@ def load_table(units):
     Returns the T, P, vf and vg data for the temperature table and for the
     pressure table.
     """
-    # opens correct sat_water file based on selected units, splits entries by "table" column
+    # opens correct sat_water file based on selected units
     if units == "SI":
         df = pd.read_csv(DATA_DIR / "sat_water_SI.csv")
     else:
