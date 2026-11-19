@@ -6,15 +6,41 @@ from thermo_state.data import load_table
 from thermo_state.plotting import show_plots
 from thermo_state.state import find_state
 
+UNIT_LABELS = {
+    "SI": {"T": "°C", "P": "bar"}
+    "Imperial": {"T": "°F", "P": "psia"},
+}
+
+
+def ask_units():
+    answer = input("Which unit system are you using? (SI/Imperial)").strip().lower()
+    while answer not in ["si", "imperial"]:
+        answer = input("Invalid input. Enter \"SI\" or \"Imperial\" (case-insensitive).").strip().lower()  
+    if answer == "si":
+        return "SI"
+    else:
+        return "Imperial"
+
+
+def ask_value(prompt):
+    while true:
+        try:
+            answer = float(input(prompt))
+            break
+        except ValueError:
+            print("Please enter a number.")
+
 
 def main():
     # 1. Get the user input
     # TODO: ask for the unit system ("SI" or "English")
-    # TODO: ask for pressure p1 and temperature T1; check they are valid numbers
-    units = "SI"
-    P1 = None
-    T1 = None
-
+    # TODO: ask for pressure p1 and temperature T1; check they are valid numbers  
+    units = ask_units()
+    labels = UNIT_LABELS[units]
+    
+    P1 = ask_value(f"Enter a pressure P1 [{labels['P']}]: ")
+    T1 = asl_value(f"Enter a temperature T1 [{labels['T']}]: ")
+    
     # 2. Load the saturated-water data
     table = load_table(units)
 
