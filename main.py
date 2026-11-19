@@ -39,7 +39,7 @@ def main():
     labels = UNIT_LABELS[units]
     
     P1 = ask_value(f"Enter a pressure P1 [{labels['P']}]: ")
-    T1 = asl_value(f"Enter a temperature T1 [{labels['T']}]: ")
+    T1 = ask_value(f"Enter a temperature T1 [{labels['T']}]: ")
     
     # 2. Load the saturated-water data
     table = load_table(units)
