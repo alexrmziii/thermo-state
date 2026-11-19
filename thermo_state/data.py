@@ -1,4 +1,4 @@
-"""Load the saturated-water CSV tables.
+"""Loads the saturated-water CSV tables.
 
 CSV files (in the data/ folder):
     sat_water_SI.csv        columns: table, T_C, P_bar,  vf_m3_per_kg,  vg_m3_per_kg,  ...
@@ -9,6 +9,7 @@ The "table" column is "A-2"/"A-2E" for temperature-table rows and
 critical point (vf = vg).
 """
 from pathlib import Path
+import pandas as pd
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
@@ -19,10 +20,21 @@ def load_table(units):
     Returns the T, P, vf and vg data for the temperature table and for the
     pressure table.
     """
-    # TODO: open the right CSV (csv module, numpy.genfromtxt, or pandas.read_csv)
-    # TODO: split the rows by the "table" column
-    # TODO: return the columns as arrays
-    raise NotImplementedError
+    # opens correct sat_water file based on selected units, splits entries by "table" column
+    if units == "SI":
+        df = pd.read_csv(DATA_DIR / "sat_water_SI.csv")
+    else:
+        df = pd.read_csv(DATA_DIR / "sat_water_English.csv")
+        
+    # renames columns for reusability
+    df = df.rename(columns = lambda name: name.split("_")[0])
+
+    # splits dataframe into temperature and pressure tables
+    t_rows = df[df["table"].str.startswith("A-2")
+    p_rows = df[df["table"].str.startswith("A-3")
+    
+    # returns values from both tables
+    return {"temperature": t_rows, "pressure": p_rows}
 
 
 def Tsat(table, P):
