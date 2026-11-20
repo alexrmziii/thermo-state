@@ -43,6 +43,7 @@ def load_table(units):
         "T_crit": crit["T"],
         "P_crit": crit["P"],
         "v_crit": crit["vf"],
+        "sat_tol": 0.5 if units == "SI" else 1.0
     }
 
 
