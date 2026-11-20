@@ -14,6 +14,9 @@ import pandas as pd
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
     
+GAS_CONSTANT = {"SI": 0.004615, "Imperial": 0.5956}     # bar·m³/(kg·K), psia·ft³/(lb·°R)
+T_CONVERSIONS = {"SI": 273.15, "Imperial": 459.67}           # °C -> K, °F -> °R
+
 
 def load_table(units):
     """
@@ -43,7 +46,9 @@ def load_table(units):
         "T_crit": crit["T"],
         "P_crit": crit["P"],
         "v_crit": crit["vf"],
-        "sat_tol": 0.5 if units == "SI" else 1.0
+        "sat_tol": 0.5 if units == "SI" else 1.0,
+        "R": GAS_CONSTANT[units],
+        "T_conversion": T_CONVERSIONS[units],
     }
 
 
@@ -79,4 +84,14 @@ def Tsat(table, P):
 def Psat(table, T):
     """Saturation pressure at temperature T."""
     tmp_t = table["temperature"]
-    return linear_interpolation(tmp_t["T"].to_numpy(), tmp_t["P"].to_numpy())
+    return linear_interpolation(T, tmp_t["T"].to_numpy(), tmp_t["P"].to_numpy())
+
+def vf_at_T(table, T):
+    """Specific liquid volume at temperature T."""
+    tmp_t = table["temperature"]
+    return linear_interpolation(T, tmp_t["T"].to_numpy(), tmp_t["vf"].to_numpy())
+
+def vg_at_t(table, T):
+    """Specific gas volume at temperature T."""
+    tmp_t = table["temperature"]
+    return linear_interpolation(T, tmp_t["T"].to_numpy(), tmp_t["vg"].to_numpy())

@@ -1,6 +1,6 @@
 """Work out the state of water at the user's pressure p1 and temperature T1."""
 
-from thermo_state.data import Tsat
+from thermo_state.data import Tsat, vf_at_T, vg_at_t
 
 COMPRESSED = "COMPRESSED LIQUID"
 SATURATED = "SAT. LIQUID-VAPOR"
@@ -48,9 +48,27 @@ def find_state(table, P1, T1):
         return SUPERHEATED
 
 
-def specific_volume(table, P1, T1):
+def specific_volume(table, P1, T1, state, x = None):
     """Specific volume v used to place the point (P1, T1) on the plots."""
-    # TODO: decide what v to use in each region.
-    #   - inside the dome p and T do not fix v (anywhere between vf and vg)
-    #   - outside the dome the saturated tables alone do not give v
-    raise NotImplementedError
+    R = table["R"]
+    conversion = table["T_conversion"]
+
+    if state == COMPRESSED:
+        # assumption: v = vf(T) for compressed liquid
+        return vf_at_T(table, T1)
+
+    if state == SATURATED:
+        # v = vf + x(vg - vf)
+        vf = vf_at_T(table, T1)
+        vg = vg_at_t(table, T1)
+        return vf + x * (vg - vf)
+
+    if state == SUPERHEATED and T1 < table["T_crit"]:
+        # assumption: ideal gas along isobar starting from saturated vapor point
+        T_sat = Tsat(table, P1)
+        vg = vg_at_t(table, T_sat)
+        return vg * (T1 + conversion) / (T_sat + conversion)
+
+    # supercritical or superheated above T_crit: ideal gas law, v = RT/P
+    return R * (T1 + conversion) / P1
+
