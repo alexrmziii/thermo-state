@@ -30,8 +30,8 @@ def load_table(units):
     df = df.rename(columns = lambda name: name.split("_")[0])
 
     # splits dataframe into temperature and pressure tables
-    t_rows = df[df["table"]].str.startswith("A-2").reset_index(drop = True)
-    p_rows = df[df["table"]].str.startswith("A-3").reset_index(drop = True)
+    t_rows = df[df["table"].str.startswith("A-2")].reset_index(drop = True)
+    p_rows = df[df["table"].str.startswith("A-3")].reset_index(drop = True)
 
     # stores the critical values
     crit = p_rows.iloc[-1]

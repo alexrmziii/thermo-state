@@ -7,7 +7,7 @@ from thermo_state.plotting import show_plots
 from thermo_state.state import find_state
 
 UNIT_LABELS = {
-    "SI": {"T": "°C", "P": "bar"}
+    "SI": {"T": "°C", "P": "bar"},
     "Imperial": {"T": "°F", "P": "psia"},
 }
 
@@ -23,7 +23,7 @@ def ask_units():
 
 
 def ask_value(prompt):
-    while true:
+    while True:
         try:
             answer = float(input(prompt))
             break
